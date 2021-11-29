@@ -189,15 +189,40 @@ void View::DrawSystem(DeviceContext *dc, System *system)
     dc->StartGraphic(system, "", system->GetUuid());
 
     Measure *firstMeasure = dynamic_cast<Measure *>(system->FindDescendantByType(MEASURE, 1));
+    // draw system divider (from the second one) if scoreDef is optimized
+    if ((system->GetIdx() > 0) && system->IsDrawingOptimized()) {
+        System *previousSystem = dynamic_cast<System>(<#expression#>);
+        if ((m_options->m_systemDivider.GetValue() == DIVIDER_left)
+            || (m_options->m_systemDivider.GetValue() == SYSTEMDIVIDER_left_right)) {
+            DrawSystemDivider(dc, system->GetDrawingX(), system->GetDrawingY(), "left");
+
+    // Draw system divider (from the second one) if scoreDef is optimized
+    if (firstMeasure && (m_options->m_systemDivider.GetValue() != SYSTEMDIVIDER_none)) {
+        // draw system divider (from the second one) if scoreDef is optimized
+        if ((system->GetIdx() > 0) && system->IsDrawingOptimized()) {
+            int x1 = system->GetDrawingX() - m_doc->GetDrawingUnit(100) * 3;
+            int y1 = system->GetDrawingY() - m_doc->GetDrawingUnit(100) * 1;
+            int x2 = system->GetDrawingX() + m_doc->GetDrawingUnit(100) * 3;
+            int y2 = system->GetDrawingY() + m_doc->GetDrawingUnit(100) * 3;
+            dc->StartCustomGraphic("systemDivider");
+            DrawObliquePolygon(dc, x1, y1, x2, y2, m_doc->GetDrawingUnit(100) * 1.5);
+            y1 += m_doc->GetDrawingUnit(100) * 2;
+            y2 += m_doc->GetDrawingUnit(100) * 2;
+            DrawObliquePolygon(dc, x1, y1, x2, y2, m_doc->GetDrawingUnit(100) * 1.5);
+            dc->EndCustomGraphic();
+        }
+        if (m_options->m_systemDivider.GetValue() > DIVIDER_left) {
+            // Right divider is not taken into account in the layout calculation and may collide with the music content
+            int rightEnd = m_doc->m_drawingPageWidth - m_doc->m_drawingPageMarginLeft - m_doc->m_drawingPageMarginRight;
+            DrawSystemDivider(
+                dc, rightEnd - m_doc->GetDrawingUnit(100) * 3, system->GetDrawingY(), "right");
+        }
+    }
 
     DrawSystemDivider(dc, system, firstMeasure);
 
     // first we need to clear the drawing list of postponed elements
     system->ResetDrawingList();
-
-    if (firstMeasure) {
-        DrawScoreDef(dc, system->GetDrawingScoreDef(), firstMeasure, system->GetDrawingX(), NULL);
-    }
 
     DrawSystemChildren(dc, system, system);
 
@@ -219,6 +244,17 @@ void View::DrawSystem(DeviceContext *dc, System *system)
     DrawSystemList(dc, system, ENDING);
 
     dc->EndGraphic(system, this);
+}
+
+void View::DrawSystemDivider(DeviceContext *dc, int x, int y, std::string position)
+{
+    dc->StartCustomGraphic("systemDivider", position);
+    DrawObliquePolygon(dc, x - m_doc->GetDrawingUnit(100) * 3, y - m_doc->GetDrawingUnit(100),
+        x + m_doc->GetDrawingUnit(100) * 3, y - -m_doc->GetDrawingUnit(100), m_doc->GetDrawingUnit(100) * 1.5);
+    y += m_doc->GetDrawingUnit(100) * 2;
+    DrawObliquePolygon(dc, x - m_doc->GetDrawingUnit(100) * 3, y - m_doc->GetDrawingUnit(100),
+        x + m_doc->GetDrawingUnit(100) * 3, y - -m_doc->GetDrawingUnit(100), m_doc->GetDrawingUnit(100) * 1.5);
+    dc->EndCustomGraphic();
 }
 
 void View::DrawSystemList(DeviceContext *dc, System *system, const ClassId classId)

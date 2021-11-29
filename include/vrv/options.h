@@ -53,6 +53,8 @@ class OptionGrp;
 
 enum option_BREAKS { BREAKS_none = 0, BREAKS_auto, BREAKS_line, BREAKS_smart, BREAKS_encoded };
 
+enum option_DIVIDER { DIVIDER_none = 0, DIVIDER_left, DIVIDER_right, DIVIDER_both };
+
 enum option_CONDENSE { CONDENSE_none = 0, CONDENSE_auto, CONDENSE_all, CONDENSE_encoded };
 
 enum option_FOOTER { FOOTER_none = 0, FOOTER_auto, FOOTER_encoded, FOOTER_always };
@@ -124,13 +126,11 @@ public:
     /**
      * Static maps used my OptionIntMap objects. Set in OptIntMap::Init
      */
-    static const std::map<int, std::string> s_breaks;
-    static const std::map<int, std::string> s_condense;
-    static const std::map<int, std::string> s_footer;
-    static const std::map<int, std::string> s_header;
-    static const std::map<int, std::string> s_multiRestStyle;
-    static const std::map<int, std::string> s_pedalStyle;
-    static const std::map<int, std::string> s_systemDivider;
+    static std::map<int, std::string> s_breaks;
+    static std::map<int, std::string> s_footer;
+    static std::map<int, std::string> s_header;
+    static std::map<int, std::string> s_measureNumber;
+    static std::map<int, std::string> s_systemDivider;
 
 protected:
     std::string m_title;
@@ -617,10 +617,6 @@ public:
     OptionBool m_staccatoCenter;
     OptionBool m_svgBoundingBoxes;
     OptionBool m_svgViewBox;
-    OptionBool m_svgHtml5;
-    OptionBool m_svgFormatRaw;
-    OptionBool m_svgRemoveXlink;
-    OptionArray m_svgAdditionalAttribute;
     OptionInt m_unit;
     OptionBool m_useFacsimile;
     OptionBool m_usePgFooterForAll;

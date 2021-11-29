@@ -42,6 +42,9 @@ const std::map<int, std::string> Option::s_pedalStyle = { { PEDALSTYLE_auto, "au
 const std::map<int, std::string> Option::s_systemDivider = { { SYSTEMDIVIDER_none, "none" },
     { SYSTEMDIVIDER_auto, "auto" }, { SYSTEMDIVIDER_left, "left" }, { SYSTEMDIVIDER_left_right, "left-right" } };
 
+std::map<int, std::string> Option::s_systemDivider
+    = { { DIVIDER_none, "none" }, { DIVIDER_left, "left" }, { DIVIDER_right, "right" }, { DIVIDER_both, "both" } };
+
 //----------------------------------------------------------------------------
 // Option
 //----------------------------------------------------------------------------
@@ -1065,6 +1068,10 @@ Options::Options()
     m_svgBoundingBoxes.SetInfo("Svg bounding boxes viewbox on svg root", "Include bounding boxes in SVG output");
     m_svgBoundingBoxes.Init(false);
     this->Register(&m_svgBoundingBoxes, "svgBoundingBoxes", &m_general);
+
+    m_systemDivider.SetInfo("System divider", "Control system devider layout");
+    m_systemDivider.Init(DIVIDER_left, &Option::s_systemDivider);
+    this->Register(&m_systemDivider, "systemDivider", &m_general);
 
     m_svgViewBox.SetInfo("Use viewbox on svg root", "Use viewBox on svg root element for easy scaling of document");
     m_svgViewBox.Init(false);
